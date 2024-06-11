@@ -4,7 +4,7 @@ Workwell Mobile is a React Native application designed to enhance workplace prod
 
 ## Table of Contents
 
-- [Features](#features)
+<!-- - [Features](#features) -->
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Running the App](#running-the-app)
@@ -12,9 +12,12 @@ Workwell Mobile is a React Native application designed to enhance workplace prod
 - [Contributing](#contributing)
 - [License](#license)
 
-## Features
+<!-- ## Features
 
 - Task management
+- Real-time notifications
+- Calendar integration
+- Team collaboration tools -->
 
 ## Prerequisites
 

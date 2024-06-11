@@ -2,14 +2,33 @@ import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react
 import React, { useState } from 'react';
 import {EStyleSheet} from './config/EStyleSheet';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
-import Selector from './components/Selector';
+import SelectorModal from './components/SelectorModal';
+
+const ITEM_SELECTION = [
+  {
+    id: 1,
+    label: 'Pomodoro',
+    duration: 1500,
+  },
+  {
+    id: 2,
+    label: 'Short Break',
+    duration: 300,
+  },
+  {
+    id: 3,
+    label: 'Long Break',
+    duration: 900,
+  },
+]
 
 const Main = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState();
   const [timer, setTimer] = useState(30);
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [keyReset, setKeyReset] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [selected, setSelected] = useState('Pomodoro');
 
   const startStopTimer = () => {
     setIsPlaying((prev) => !prev);
@@ -27,6 +46,13 @@ const Main = () => {
     setIsPlaying(false);
   }
 
+  const selectedHandler = (selected: any) => {
+    setSelected(selected.label);
+    setTimer(selected.duration);
+    setShowModal(false);
+    setKeyReset((prev) => prev + 1);
+  }
+
   const secondsToMinutes = (totalSeconds: number) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
@@ -40,7 +66,9 @@ const Main = () => {
       <ImageBackground source={require('./assets/background.jpeg')} style={{ width: '100%', height: '100%', position: 'absolute' }} />
       <View style={styles.contentView}>
         <View style={styles.dropdownView}>
-          <Selector />
+          <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowModal(true)}>
+            <Text style={styles.slectorTxt}>{selected}</Text>
+          </TouchableOpacity>
         </View>
         <View key={keyReset}>
           <CountdownCircleTimer
@@ -66,6 +94,12 @@ const Main = () => {
           )}
         </View>
       </View>
+      <SelectorModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        onSelect={selectedHandler}
+        items={ITEM_SELECTION}
+      />
     </View>
   )
 };
@@ -73,6 +107,21 @@ const Main = () => {
 export default Main
 
 const styles = EStyleSheet.create({
+  selectorBtn: {
+    paddingVertical: '10rem',
+    width: '180rem',
+    borderRadius: '50rem',
+    marginVertical: '1rem',
+    borderWidth: '2rem',
+    borderColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  slectorTxt: {
+    fontSize: '18rem',
+    fontWeight: 'bold',
+    color: '#fff',
+  },
   pickerLabel: {
     textAlign: 'center',
     fontWeight: 'bold',
@@ -112,6 +161,7 @@ const styles = EStyleSheet.create({
     width: '100%',
     marginBottom: '20rem',
     zIndex: 1,
+    alignItems: 'center',
   },
   pickerItem: {
     fontSize: '20rem',

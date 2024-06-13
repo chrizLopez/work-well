@@ -12,11 +12,11 @@ type SelectorModalProps = {
 const SelectorModal = ({show, onSelect, onClose, items}: SelectorModalProps) => {
   return (
     <Modal
-    animationType="fade"
-    transparent={true}
-    visible={show}
-    onRequestClose={() => {
-      onClose();
+      animationType="fade"
+      transparent={true}
+      visible={show}
+      onRequestClose={() => {
+        onClose();
     }}>
       <View style={styles.selectorView}>
         <View style={styles.container}>

@@ -1,22 +1,25 @@
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useContext, useState } from "react";
 import { EStyleSheet } from "../config/EStyleSheet";
 import TaskHistoryItem from "./TaskHistoryItem";
+import { AppContext } from "../context/AppProvider";
 
-const activeAcheckBox = require("../assets/active-checkbox.png");
-const inactiveCheckbox = require("../assets/inactive-checkbox.png");
-
-const TaskHistory = ({ data, removeItem, onAddTask }: any) => {
-  const [taskName, setTaskName] = React.useState("");
+const TaskHistory = () => {
+  const {taskHistory, onAddTask} = useContext(AppContext);
+  const [taskName, setTaskName] = useState("");
 
   const onChangeTexthandler = (text: string) => {
     setTaskName(text);
   };
 
+  const removeItemHandler = (id: number) => {
+    // setTaskHistory((prev) => prev.filter((item) => item.id !== id));
+  };
+
   const addTaskHandler = () => {
     onAddTask(taskName);
-    setTaskName("");
   }
+
   return (
     <View>
       <View style={styles.addTaskView}>
@@ -34,8 +37,8 @@ const TaskHistory = ({ data, removeItem, onAddTask }: any) => {
         </TouchableOpacity>
       </View>
       <View style={styles.itemListContainer}>
-        {data.map((item: any) => (
-          <TaskHistoryItem key={item.id} item={item} onRemoveItem={removeItem} />
+        {taskHistory.map((item: any) => (
+          <TaskHistoryItem key={item.id} item={item} onRemoveItem={() => removeItemHandler(item.id)} />
         ))}
       </View>
     </View>

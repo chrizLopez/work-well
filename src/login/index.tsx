@@ -1,10 +1,15 @@
 import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import styles from './styles';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 const imgBg = require('../assets/background.jpeg');
 
-const Login = () => {
+type LoginProps = {
+  navigation: StackNavigationProp<any>;
+}
+
+const Login = ({navigation}: LoginProps) => {
   return (
     <View style={styles.container}>
       <ImageBackground source={imgBg} style={{ width: '100%', height: '100%', position: 'absolute' }} />
@@ -22,6 +27,7 @@ const Login = () => {
 
         <TouchableOpacity
             style={styles.loginBtn}
+            onPress={() => navigation.navigate('home')}
           >
             <Text style={styles.loginTxt}>
               Login

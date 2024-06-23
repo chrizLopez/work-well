@@ -15,6 +15,7 @@ import styles from "./styles";
 import StartModal from "./components/StartModal";
 import { generateId } from "./components/helper";
 import TaskHistory from "./components/TaskHistory";
+import BottomSheetContents from "./components/BottomSheetContents";
 
 const ITEM_SELECTION = [
   {
@@ -142,7 +143,7 @@ const Main = ({ navigation }: any) => {
           <CountdownCircleTimer
             isPlaying={isPlaying}
             duration={timer}
-            colors={["#008000", "#ffff00", "#ffa500", "#ff0000"]}
+            colors={["#f99ca0", "#faaeba", "#fccfee", "#fccfee"]}
             colorsTime={[timer, timer * 0.75, timer * 0.5, timer * 0]}
             size={280}
             onComplete={completeHandler}
@@ -190,7 +191,7 @@ const Main = ({ navigation }: any) => {
         backgroundStyle={styles.bottomSheet}
       >
         <BottomSheetView style={styles.contentContainer}>
-          <TaskHistory data={taskHistory} removeItem={removeItemHandler} onAddTask={addTaskHandler} />
+          <BottomSheetContents />
         </BottomSheetView>
       </BottomSheet>
     </View>

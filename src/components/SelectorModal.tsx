@@ -1,15 +1,17 @@
 import { Modal, Text, TouchableOpacity, View } from 'react-native';
 import {EStyleSheet} from '../config/EStyleSheet';
-import React from 'react';
+import React, { useContext } from 'react';
+import { AppContext } from '../context/AppProvider';
+import LinearButton from './LinearButton';
 
 type SelectorModalProps = {
   show: boolean;
   onSelect: (selected: string) => void;
   onClose: () => void;
-  items: any;
 }
 
-const SelectorModal = ({show, onSelect, onClose, items}: SelectorModalProps) => {
+const SelectorModal = ({show, onSelect, onClose}: SelectorModalProps) => {
+  const {timerList} = useContext(AppContext);
   return (
     <Modal
       animationType="fade"
@@ -20,16 +22,18 @@ const SelectorModal = ({show, onSelect, onClose, items}: SelectorModalProps) => 
     }}>
       <View style={styles.selectorView}>
         <View style={styles.container}>
-          {items.map((item: any, index: number) => (
-            <TouchableOpacity
+          {timerList.map((item: any, index: number) => (
+            <LinearButton 
               key={index}
-              style={styles.selectorBtn}
+              title={item.label}
               onPress={() => {
                 onSelect(item);
                 onClose();
-              }}>
-              <Text style={styles.slectorTxt}>{item.label}</Text>
-            </TouchableOpacity>
+              }}
+              linearColors={item.linearColor}
+              buttonStyle={styles.selectorBtn}
+              textStyle={styles.slectorTxt}
+            />
           ))}
         </View>
       </View>
@@ -50,7 +54,7 @@ const styles = EStyleSheet.create({
   },
   slectorTxt: {
     fontSize: '18rem',
-    fontWeight: 'bold',
+    fontWeight: '500',
     color: '#fff',
   },
   selectorView: {

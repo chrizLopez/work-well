@@ -35,7 +35,7 @@ const styles = EStyleSheet.create({
   },
   slectorTxt: {
     fontSize: "18rem",
-    fontWeight: "bold",
+    fontWeight: "500",
     color: "#fff",
   },
   pickerLabel: {

@@ -16,6 +16,7 @@ import StartModal from "./components/StartModal";
 import { generateId } from "./components/helper";
 import TaskHistory from "./components/TaskHistory";
 import BottomSheetContents from "./components/BottomSheetContents";
+import LinearButton from "./components/LinearButton";
 
 const ITEM_SELECTION = [
   {
@@ -48,22 +49,11 @@ const Main = ({ navigation }: any) => {
     label: "Pomodoro",
     duration: 1500,
     isChecked: false,
+    linearColor: ["#A29BFE", "#74B9FF"],
   });
   const [showStartModal, setShowStartModal] = useState(false);
-  const [taskHistory, setTaskHistory] = useState([] as any[]);
-  const [currentTask, setCurrentTask] = useState({} as any);
 
   const startStopTimer = (taskname = "No Task name provided") => {
-    // if (!isPlaying && elapsedTime === timer) {
-    //   const cTask = {
-    //     id: generateId(),
-    //     data: selected,
-    //     taskname,
-    //   };
-
-    //   setTaskHistory((prev) => [...prev, cTask]);
-    //   setCurrentTask(cTask);
-    // }
     setIsPlaying((prev) => !prev);
   };
 
@@ -91,10 +81,6 @@ const Main = ({ navigation }: any) => {
     // setShowStartModal(true);
   };
 
-  const removeItemHandler = (id: number) => {
-    setTaskHistory((prev) => prev.filter((item) => item.id !== id));
-  };
-
   const secondsToMinutes = (totalSeconds: number) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
@@ -103,21 +89,11 @@ const Main = ({ navigation }: any) => {
     return `${minutes}:${formattedSeconds}`;
   };
 
-  const addTaskHandler = (taskname: string) => {
-    const cTask = {
-      id: generateId(),
-      data: selected,
-      taskname,
-      isChecked: false,
-    };
-
-    setTaskHistory((prev) => [...prev, cTask]);
-    setCurrentTask(cTask);
-  }
-
   const onPressHandler = () => {
     navigation.navigate("login");
   };
+
+  console.log("Main", selected);
 
   return (
     <View style={styles.container}>
@@ -132,12 +108,13 @@ const Main = ({ navigation }: any) => {
       />
       <View style={styles.contentView}>
         <View style={styles.dropdownView}>
-          <TouchableOpacity
-            style={styles.selectorBtn}
+          <LinearButton
+            title={selected.label}
             onPress={() => setShowModal(true)}
-          >
-            <Text style={styles.slectorTxt}>{selected.label}</Text>
-          </TouchableOpacity>
+            linearColors={selected.linearColor}
+            buttonStyle={styles.selectorBtn}
+            textStyle={styles.slectorTxt}
+          />
         </View>
         <View key={keyReset}>
           <CountdownCircleTimer
@@ -176,7 +153,6 @@ const Main = ({ navigation }: any) => {
         show={showModal}
         onClose={() => setShowModal(false)}
         onSelect={selectedHandler}
-        items={ITEM_SELECTION}
       />
 
       <StartModal

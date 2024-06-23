@@ -48,31 +48,6 @@ const styles = EStyleSheet.create({
   dropdownContainer: {
     alignItems: "center",
   },
-  startStopText: {
-    fontSize: "20rem",
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  startStopBtn: {
-    backgroundColor: "#f64082",
-    paddingVertical: "20rem",
-    paddingHorizontal: "80rem",
-    borderRadius: "50rem",
-  },
-  resetBtn: {
-    backgroundColor: "transparent",
-    paddingVertical: "18rem",
-    paddingHorizontal: "75rem",
-    borderRadius: "50rem",
-    borderWidth: "2rem",
-    borderColor: "#fff",
-    marginTop: "10rem",
-  },
-  btnView: {
-    marginVertical: "20rem",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   dropdownView: {
     width: "100%",
     marginBottom: "20rem",
@@ -109,6 +84,7 @@ const styles = EStyleSheet.create({
     width: "80%",
     alignItems: "center",
     justifyContent: "center",
+    marginTop: "50rem",
   },
 });
 

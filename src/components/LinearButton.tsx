@@ -12,7 +12,6 @@ type LinearButtonProps = {
 }
 
 const LinearButton = ({title, onPress, buttonStyle, textStyle, linearColors}: LinearButtonProps) => {
-  console.log('linearColors', linearColors)
   return (
     <TouchableOpacity onPress={onPress}>
       <LinearGradient

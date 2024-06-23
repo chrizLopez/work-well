@@ -53,7 +53,7 @@ const CountdownTimer = ({ duration, setTimer, selected, onReset }: CountdownTime
 
   return (
     <View style={styles.container}>
-      <View style={{ width: size, height: size, position: "relative" }}>
+      <View style={{ width: size, height: size, position: "relative", backgroundColor: '#282828', borderRadius: size, }}>
         <Svg width={size} height={size}>
           <Defs>
             <LinearGradient id="your-unique-id" x1="1" y1="0" x2="0" y2="0">
@@ -83,6 +83,9 @@ const CountdownTimer = ({ duration, setTimer, selected, onReset }: CountdownTime
           <Text style={styles.timerText}>
             {secondsToMinutes(remainingTime)}
           </Text>
+          <Text style={styles.minutesTxt}>
+            minutes
+          </Text>
         </View>
       </View>
       <View style={styles.btnView}>
@@ -91,11 +94,9 @@ const CountdownTimer = ({ duration, setTimer, selected, onReset }: CountdownTime
             {timerStarted ? "Pause" : "Start"}
           </Text>
         </TouchableOpacity>
-        {elapsedTime !== duration && !timerStarted && (
-          <TouchableOpacity style={styles.resetBtn} onPress={resetHandler}>
-            <Text style={styles.startStopText}>Reset</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity style={styles.startStopBtn} onPress={resetHandler}>
+          <Text style={styles.startStopText}>Reset</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -104,25 +105,24 @@ const CountdownTimer = ({ duration, setTimer, selected, onReset }: CountdownTime
 export default CountdownTimer;
 
 const styles = EStyleSheet.create({
+  minutesTxt: {
+    fontSize: "12rem",
+    fontWeight: "500",
+    color: "#666666",
+  },
   startStopText: {
-    fontSize: "20rem",
-    fontWeight: "bold",
+    fontSize: "15rem",
+    fontWeight: "500",
     color: "#fff",
   },
   startStopBtn: {
-    backgroundColor: "#f64082",
-    paddingVertical: "20rem",
+    backgroundColor: "#282828CC",
+    paddingVertical: "15rem",
     paddingHorizontal: "80rem",
     borderRadius: "50rem",
-  },
-  resetBtn: {
-    backgroundColor: "transparent",
-    paddingVertical: "18rem",
-    paddingHorizontal: "75rem",
-    borderRadius: "50rem",
     borderWidth: "2rem",
-    borderColor: "#fff",
-    marginTop: "10rem",
+    borderColor: "#66666659",
+    marginVertical: "3rem",
   },
   btnView: {
     marginVertical: "20rem",

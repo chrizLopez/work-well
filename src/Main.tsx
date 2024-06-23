@@ -1,20 +1,14 @@
 import {
   Image,
   ImageBackground,
-  Text,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
 import React, { useRef, useState } from "react";
-import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import SelectorModal from "./components/SelectorModal";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
 import styles from "./styles";
-import StartModal from "./components/StartModal";
-import { generateId } from "./components/helper";
-import TaskHistory from "./components/TaskHistory";
 import BottomSheetContents from "./components/BottomSheetContents";
 import LinearButton from "./components/LinearButton";
 import CountdownTimer from "./components/CountdownTimer";
@@ -44,10 +38,13 @@ const Main = ({ navigation }: any) => {
     handleKeyReset();
   };
 
-
   const onPressHandler = () => {
     navigation.navigate("login");
   };
+
+  const hideBottomSheetHandler = () => {
+    bottomSheetRef.current?.close();
+  }
 
   return (
     <View style={styles.container}>
@@ -93,7 +90,7 @@ const Main = ({ navigation }: any) => {
         backgroundStyle={styles.bottomSheet}
       >
         <BottomSheetView style={styles.contentContainer}>
-          <BottomSheetContents />
+          <BottomSheetContents onHide={hideBottomSheetHandler}/>
         </BottomSheetView>
       </BottomSheet>
     </View>

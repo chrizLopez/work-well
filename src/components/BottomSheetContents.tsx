@@ -2,8 +2,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { EStyleSheet } from "../config/EStyleSheet";
 import TaskHistory from "./TaskHistory";
+import Settings from "./Settings";
 
-const BottomSheetContents = () => {
+const BottomSheetContents = ({onHide}: any) => {
   const [currentTab, setCurrentTab] = React.useState(0);
   return (
     <View>
@@ -23,7 +24,7 @@ const BottomSheetContents = () => {
       </View>
       <View style={styles.content}>
         {currentTab === 0 && <TaskHistory />}
-        {currentTab === 1 && <Text>Settings</Text>}
+        {currentTab === 1 && <Settings onHide={onHide} />}
       </View>
     </View>
   );

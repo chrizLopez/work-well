@@ -40,8 +40,8 @@ const AppProvider = ({ children }: any) => {
     setCurrentTask(cTask);
   };
 
-  const setTimerListHandler = (selected: any) => {
-    // setTimerList(selected);
+  const setTimerListHandler = (newVal: any) => {
+    setTimerList(newVal);
   };
 
   return (
@@ -52,7 +52,7 @@ const AppProvider = ({ children }: any) => {
         currentTask,
         onAddTask,
         timerList,
-        setTimerList: setTimerList,
+        setTimerList: setTimerListHandler,
       }}
     >
       {children}

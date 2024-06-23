@@ -78,7 +78,7 @@ const styles = EStyleSheet.create({
     justifyContent: "center",
   },
   contentView: {
-    backgroundColor: "#2b2b2b50",
+    backgroundColor: "#282828CC",
     padding: "10rem",
     borderRadius: "20rem",
     width: "80%",

@@ -48,11 +48,6 @@ const Main = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.logoView}>
-        <TouchableWithoutFeedback onPress={onPressHandler}>
-          <Image source={require("./assets/logo-small.png")} height={20} />
-        </TouchableWithoutFeedback>
-      </View>
       <ImageBackground
         source={require("./assets/background.jpeg")}
         style={{ width: "100%", height: "100%", position: "absolute" }}

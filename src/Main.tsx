@@ -9,12 +9,15 @@ import LinearButton from "./components/LinearButton";
 import CountdownTimer from "./components/CountdownTimer";
 import BottomButons from "./components/BottomButons";
 import { AppContext } from "./context/AppProvider";
+import Settings from "./components/Settings";
+import TaskHistory from "./components/TaskHistory";
 
 const logoImg = require("./assets/logo-small.png");
 
 const Main = () => {
   const {timerList} = useContext(AppContext);
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const bottomSheetRefTask = useRef<BottomSheet>(null);
 
   const [timer, setTimer] = useState(1500);
   const [keyReset, setKeyReset] = useState(0);
@@ -100,19 +103,39 @@ const Main = () => {
 
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={["5%", "80%"]}
+        snapPoints={["5%", "70%"]}
         backgroundStyle={styles.bottomSheet}
       >
         <BottomSheetView style={styles.contentContainer}>
-          <BottomSheetContents onHide={hideBottomSheetHandler} />
+          <Settings onHide={hideBottomSheetHandler} />
+        </BottomSheetView>
+      </BottomSheet>
+
+      <BottomSheet
+        ref={bottomSheetRefTask}
+        snapPoints={["5%", "70%"]}
+        backgroundStyle={styles.bottomSheet}
+      >
+        <BottomSheetView style={styles.contentContainer}>
+          <TaskHistory />
         </BottomSheetView>
       </BottomSheet>
 
       <View style={styles.bottomButtonsView}>
         <BottomButons
           onPressHome={onPressHomeHandler}
-          onPressPlus={() => bottomSheetRef.current?.expand()}
-          onPressMenu={() => console.log("menu")}
+          onPressPlus={() => {
+            setTimeout(() => {
+              bottomSheetRefTask.current?.expand();
+            }, 500);
+            bottomSheetRef.current?.close();
+          }}
+          onPressMenu={() => {
+            setTimeout(() => {
+              bottomSheetRef.current?.expand();
+            }, 500);
+            bottomSheetRefTask.current?.close();
+          }}
         />
       </View>
     </View>

@@ -17,8 +17,7 @@ const styles = EStyleSheet.create({
     width: "137rem",
   },
   bottomSheet: {
-    backgroundColor: "#dbdbd9",
-    opacity: 0.9,
+    backgroundColor: "#fff",
   },
   contentContainer: {
     padding: "20rem",

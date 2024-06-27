@@ -17,8 +17,8 @@ const LinearButton = ({title, onPress, buttonStyle, textStyle, linearColors}: Li
       <LinearGradient
         colors={linearColors || []}
         style={[styles.linearButton, buttonStyle]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
+        start={{ x: 1, y: 0 }}
+        end={{ x: 0, y: 0 }}
       >
         <Text style={[styles.buttonText, textStyle]}>{title}</Text>
       </LinearGradient>

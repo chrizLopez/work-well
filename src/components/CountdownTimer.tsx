@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EStyleSheet } from "../config/EStyleSheet";
 import { useCountdown } from "react-native-countdown-circle-timer";
 import Svg, { Path, LinearGradient, Stop, Defs } from "react-native-svg";
@@ -11,9 +11,10 @@ type CountdownTimerProps = {
   setTimer: (duration: any) => void;
   selected: any;
   onReset: () => void;
+  showButtons?: boolean;
 };
 
-const CountdownTimer = ({ duration, setTimer, selected, onReset }: CountdownTimerProps) => {
+const CountdownTimer = ({ duration, setTimer, selected, onReset, showButtons }: CountdownTimerProps) => {
   const [timerStarted, setTimerStarted] = useState(false);
 
   const startStopTimer = (taskname = "No Task name provided") => {
@@ -53,51 +54,55 @@ const CountdownTimer = ({ duration, setTimer, selected, onReset }: CountdownTime
 
   return (
     <View style={styles.container}>
-      <View style={{ width: size, height: size, position: "relative", backgroundColor: '#282828', borderRadius: size, }}>
-        <Svg width={size} height={size}>
-          <Defs>
-            <LinearGradient id="your-unique-id" x1="1" y1="0" x2="0" y2="0">
-              <Stop offset="5%" stopColor={selected.linearColor[0]}/>
-              <Stop offset="95%" stopColor={selected.linearColor[1]}/>
-            </LinearGradient>
-          </Defs>
-          <Path
-            d={path}
-            fill="none"
-            stroke="#d9d9d9"
-            strokeWidth={strokeWidth}
-          />
-          {elapsedTime !== duration && (
+      <View style={styles.timerContainer}>
+        <View style={{ width: size, height: size, position: "relative", backgroundColor: '#282828', borderRadius: size, }}>
+          <Svg width={size} height={size}>
+            <Defs>
+              <LinearGradient id="your-unique-id" x1="1" y1="0" x2="0" y2="0">
+                <Stop offset="5%" stopColor={selected.linearColor[0]}/>
+                <Stop offset="95%" stopColor={selected.linearColor[1]}/>
+              </LinearGradient>
+            </Defs>
             <Path
               d={path}
               fill="none"
-              stroke={stroke}
-              strokeLinecap="butt"
+              stroke="#d9d9d9"
               strokeWidth={strokeWidth}
-              strokeDasharray={pathLength}
-              strokeDashoffset={strokeDashoffset}
             />
-          )}
-        </Svg>
-        <View style={styles.time}>
-          <Text style={styles.timerText}>
-            {secondsToMinutes(remainingTime)}
-          </Text>
-          <Text style={styles.minutesTxt}>
-            minutes
-          </Text>
+            {elapsedTime !== duration && (
+              <Path
+                d={path}
+                fill="none"
+                stroke={stroke}
+                strokeLinecap="butt"
+                strokeWidth={strokeWidth}
+                strokeDasharray={pathLength}
+                strokeDashoffset={strokeDashoffset}
+              />
+            )}
+          </Svg>
+          <View style={styles.time}>
+            <Text style={styles.timerText}>
+              {secondsToMinutes(remainingTime)}
+            </Text>
+            <Text style={styles.minutesTxt}>
+              minutes
+            </Text>
+          </View>
         </View>
       </View>
-      <View style={styles.btnView}>
-        <TouchableOpacity style={styles.startStopBtn} onPress={onStartHandler}>
-          <Text style={styles.startStopText}>
-            {timerStarted ? "Pause" : "Start"}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.startStopBtn} onPress={resetHandler}>
-          <Text style={styles.startStopText}>Reset</Text>
-        </TouchableOpacity>
+      {showButtons && (
+        <View style={styles.btnView}>
+          <TouchableOpacity style={styles.startStopBtn} onPress={onStartHandler}>
+            <Text style={styles.startStopText}>
+              {timerStarted ? "Pause" : "Start"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.startStopBtn} onPress={resetHandler}>
+            <Text style={styles.startStopText}>Reset</Text>
+          </TouchableOpacity>
       </View>
+      )}
     </View>
   );
 };
@@ -105,6 +110,11 @@ const CountdownTimer = ({ duration, setTimer, selected, onReset }: CountdownTime
 export default CountdownTimer;
 
 const styles = EStyleSheet.create({
+  timerContainer: {
+    padding:  "10rem",
+    backgroundColor: '#282828',
+    borderRadius: "150rem",
+  },
   minutesTxt: {
     fontSize: "12rem",
     fontWeight: "500",

@@ -48,12 +48,14 @@ const styles = EStyleSheet.create({
   listItems: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f9f9f9",
+    // backgroundColor: "#f9f9f9",
     padding: "10rem",
-    marginVertical: "5rem",
+    marginVertical: "2rem",
     borderRadius: "10rem",
     justifyContent: "space-between",
-    flex: 1
+    flex: 1,
+    borderWidth: "1rem",
+    borderColor: "#CCCCCC",
   },
   itemListContainer: {
     marginBottom: "5rem",

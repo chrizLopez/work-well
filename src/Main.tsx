@@ -1,5 +1,5 @@
 import { ImageBackground, View, Image } from "react-native";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import SelectorModal from "./components/SelectorModal";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
@@ -12,10 +12,10 @@ import { AppContext } from "./context/AppProvider";
 import Settings from "./components/Settings";
 import TaskHistory from "./components/TaskHistory";
 
-const logoImg = require("./assets/logo-small.png");
+import { GOAL_LIST } from "./components/static/InitialGoals";
 
 const Main = () => {
-  const {timerList} = useContext(AppContext);
+  const {timerList, setGoals} = useContext(AppContext);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetRefTask = useRef<BottomSheet>(null);
 
@@ -30,6 +30,11 @@ const Main = () => {
     isChecked: false,
     linearColor: ["#A29BFE", "#74B9FF"],
   });
+
+  useEffect(() => {
+    setGoals(GOAL_LIST);
+    console.log("GOAL_LIST set");
+  }, []);
 
   const handleKeyReset = () => {
     setKeyReset((prev) => prev + 1);
@@ -95,11 +100,6 @@ const Main = () => {
           )}
         </View>
       </View>
-      {/* <SelectorModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        onSelect={selectedHandler}
-      /> */}
 
       <BottomSheet
         ref={bottomSheetRef}

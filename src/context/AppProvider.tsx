@@ -6,38 +6,60 @@ type AppContextType = {
   taskHistory: any[];
   onRemoveItem: (id: string) => void;
   currentTask: any;
-  onAddTask: Dispatch<React.SetStateAction<any>>;
+  onAddTask: (taskname: string, id: string) => void;
   timerList: any;
   setTimerList: Dispatch<React.SetStateAction<any>>;
+  goals: any[];
+  setGoals: Dispatch<React.SetStateAction<any>>;
 };
 
 const AppContext = createContext<AppContextType>({
   taskHistory: [],
   onRemoveItem: () => {},
   currentTask: {},
-  onAddTask: (taskname: string) => {},
+  onAddTask: (taskname: string, id: string) => {},
   timerList: {},
   setTimerList: () => {},
+  goals: [],
+  setGoals: () => {},
 });
 
 const AppProvider = ({ children }: any) => {
   const [taskHistory, setTaskHistory] = useState([] as any[]);
   const [currentTask, setCurrentTask] = useState({} as any);
   const [timerList, setTimerList] = useState(ITEM_SELECTION);
+  const [goals, setGoals] = useState([] as any[]);
 
   const onRemoveItem = (id: string) => {
     setTaskHistory((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const onAddTask = (taskname: string) => {
-    const cTask = {
-      id: generateId(),
-      taskname,
-      isChecked: false,
+  const onAddTask = (taskname: string, id: string) => {
+    // add task to specific goal
+    const ind = goals.findIndex((item) => item.id === id);
+    const goal = goals[ind];
+    const tasks = goal.tasks;
+    const newTask = {
+      id: tasks.length + 1,
+      name: taskname,
     };
+    goal.tasks = [...tasks, newTask];
+    const newGoals = [...goals];
+    newGoals[ind] = goal;
+    setGoals(newGoals);
 
-    setTaskHistory((prev) => [...prev, cTask]);
-    setCurrentTask(cTask);
+
+
+    // const cTask = {
+    //   id: generateId(),
+    //   taskname,
+    //   isChecked: false,
+    // };
+
+
+
+    // setTaskHistory((prev) => [...prev, cTask]);
+    // setCurrentTask(cTask);
   };
 
   const setTimerListHandler = (newVal: any) => {
@@ -53,6 +75,8 @@ const AppProvider = ({ children }: any) => {
         onAddTask,
         timerList,
         setTimerList: setTimerListHandler,
+        goals,
+        setGoals,
       }}
     >
       {children}

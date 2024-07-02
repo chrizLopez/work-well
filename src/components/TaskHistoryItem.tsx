@@ -5,17 +5,27 @@ import { EStyleSheet } from "../config/EStyleSheet";
 const activeAcheckBox = require("../assets/active-checkbox.png");
 const inactiveCheckbox = require("../assets/inactive-checkbox.png");
 
-const TaskHistoryItem = ({item, onRemoveItem}: any) => {
-  const [active, setActive] = useState(item.isChecked);
+type TaskHistoryItemProps = {
+  item: any;
+  onRemoveItem: (id: string) => void;
+  onPressCheck: (isChecked: boolean, id: string) => void;
+}
+
+const TaskHistoryItem = ({item, onRemoveItem, onPressCheck}: TaskHistoryItemProps) => {
+const onCheckPressHandler = () => {
+    const newVal = !item.checked;
+    onPressCheck(newVal, item.id);
+  }
+
   return (
     <View style={styles.listContainer}>
-      <TouchableOpacity style={styles.checkboxView} onPress={() => setActive(!active)}>
-        <Image source={active ? activeAcheckBox : inactiveCheckbox} style={styles.checkbox} />
+      <TouchableOpacity style={styles.checkboxView} onPress={onCheckPressHandler}>
+        <Image source={item.checked ? activeAcheckBox : inactiveCheckbox} style={styles.checkbox} />
       </TouchableOpacity>
       <View style={styles.listItems}>
         <View key={item.id} style={styles.itemList}>
           <Text style={styles.tasknameTxt}>
-            {item.taskname !== "" ? item.taskname : "No task name"}
+            {item.name !== "" ? item.name : "No task name"}
           </Text>
         </View>
         <TouchableOpacity onPress={() => onRemoveItem(item.id)}>

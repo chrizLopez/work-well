@@ -6,38 +6,63 @@ import { AppContext } from "../context/AppProvider";
 import { Dropdown } from "react-native-element-dropdown";
 
 type dropdownItemProps = {
-  label: string;
-  value: string;
+  name: string;
+  id: string;
+  tasks: any[];
+  checked: boolean;
 };
 
-const data: dropdownItemProps[] = [
-  { label: "Goal 1", value: "1" },
-  { label: "Goal 2", value: "2" },
-  { label: "Goal 3", value: "3" },
-  { label: "Goal 4", value: "4" },
-  { label: "Goal 5", value: "5" },
-  { label: "Goal 6", value: "6" },
-  { label: "Goal 7", value: "7" },
-  { label: "Goal 8", value: "8" },
-];
-
 const TaskHistory = () => {
-  const { taskHistory, onAddTask } = useContext(AppContext);
+  const { onAddTask, goals, setGoals } = useContext(AppContext);
   const [taskName, setTaskName] = useState("");
-  const [value, setValue]: any = useState(null);
+  const [selectedGoal, setSelectedGoal] = useState<dropdownItemProps | null>(null);
+  const [counter, setCounter] = useState(0);
 
   const onChangeTexthandler = (text: string) => {
     setTaskName(text);
   };
 
   const removeItemHandler = (id: number) => {
-    // setTaskHistory((prev) => prev.filter((item) => item.id !== id));
+    const ind = selectedGoal?.tasks.findIndex((item) => item.id === id);
+    if (ind === undefined || ind === -1 || !selectedGoal) {
+      return;
+    }
+    const newTasks = [...selectedGoal.tasks];
+    newTasks.splice(ind, 1);
+    const newGoal = { ...selectedGoal, tasks: newTasks };
+    const indGoal = goals.findIndex((item) => item.id === selectedGoal.id);
+    const newGoals = [...goals];
+    newGoals[indGoal] = newGoal;
+    setGoals(newGoals);
+    setSelectedGoal(newGoal);
+
   };
 
   const addTaskHandler = () => {
-    onAddTask(taskName);
+    if (!selectedGoal) {
+      return;
+    }
+    onAddTask(taskName, selectedGoal.id);
     setTaskName("");
   };
+
+  const onPressCheckHandler = (isChecked: boolean, id: string) => {
+    if (!selectedGoal) {
+      return;
+    }
+    const ind = selectedGoal.tasks.findIndex((item) => item.id === id);
+    if (ind === undefined || ind === -1) {
+      return;
+    }
+    const newTasks = [...selectedGoal.tasks];
+    newTasks[ind].checked = isChecked;
+    const newGoal = { ...selectedGoal, tasks: newTasks };
+    const indGoal = goals.findIndex((item) => item.id === selectedGoal.id);
+    const newGoals = [...goals];
+    newGoals[indGoal] = newGoal;
+    setGoals(newGoals);
+    setSelectedGoal(newGoal);
+  }
 
   return (
     <View>
@@ -48,15 +73,15 @@ const TaskHistory = () => {
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
-          data={data}
+          data={goals}
           maxHeight={300}
-          labelField="label"
-          valueField="value"
+          labelField="name"
+          valueField="id"
           placeholder="Select goal"
           searchPlaceholder="Search..."
-          value={value}
+          value={selectedGoal}
           onChange={(item: dropdownItemProps) => {
-            setValue(item.value);
+            setSelectedGoal(item);
           }}
         />
       </View>
@@ -72,11 +97,12 @@ const TaskHistory = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.itemListContainer}>
-        {taskHistory.map((item: any) => (
+        {selectedGoal && selectedGoal.tasks.map((item: any) => (
           <TaskHistoryItem
             key={item.id}
             item={item}
             onRemoveItem={() => removeItemHandler(item.id)}
+            onPressCheck={onPressCheckHandler}
           />
         ))}
       </View>

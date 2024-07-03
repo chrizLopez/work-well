@@ -15,7 +15,7 @@ import LinearButton from "./LinearButton";
 
 const Settings = ({ onHide }: any) => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const { setTimerList } = useContext(AppContext);
+  const { setTimerList, isLoggedIn } = useContext(AppContext);
 
   const [pomodoroTimer, setPomodoroTimer]: any = useState(
     ITEM_SELECTION[0].duration / 60
@@ -69,6 +69,11 @@ const Settings = ({ onHide }: any) => {
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
   };
+
+  const onPressAccountHandler = () => {
+    // onHide();
+    
+  }
 
   return (
     <View>
@@ -124,8 +129,8 @@ const Settings = ({ onHide }: any) => {
           <Text style={styles.saveTxt}>Save Settings</Text>
         </TouchableOpacity>
         <LinearButton
-          title="User Account"
-          onPress={onHide}
+          title={isLoggedIn ? 'User Account' : 'Login Account'}
+          onPress={onPressAccountHandler}
           linearColors={["#0984E3", "#74B9FF"]}
           buttonStyle={styles.loginBtn}
           textStyle={styles.saveTxt}

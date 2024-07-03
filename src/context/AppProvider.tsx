@@ -11,6 +11,8 @@ type AppContextType = {
   setTimerList: Dispatch<React.SetStateAction<any>>;
   goals: any[];
   setGoals: Dispatch<React.SetStateAction<any>>;
+  isLoggedIn: boolean;
+  setIsLoggedIn: Dispatch<React.SetStateAction<boolean>>;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -22,6 +24,8 @@ const AppContext = createContext<AppContextType>({
   setTimerList: () => {},
   goals: [],
   setGoals: () => {},
+  isLoggedIn: false,
+  setIsLoggedIn: () => {},
 });
 
 const AppProvider = ({ children }: any) => {
@@ -29,6 +33,7 @@ const AppProvider = ({ children }: any) => {
   const [currentTask, setCurrentTask] = useState({} as any);
   const [timerList, setTimerList] = useState(ITEM_SELECTION);
   const [goals, setGoals] = useState([] as any[]);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const onRemoveItem = (id: string) => {
     setTaskHistory((prev) => prev.filter((item) => item.id !== id));
@@ -47,19 +52,6 @@ const AppProvider = ({ children }: any) => {
     const newGoals = [...goals];
     newGoals[ind] = goal;
     setGoals(newGoals);
-
-
-
-    // const cTask = {
-    //   id: generateId(),
-    //   taskname,
-    //   isChecked: false,
-    // };
-
-
-
-    // setTaskHistory((prev) => [...prev, cTask]);
-    // setCurrentTask(cTask);
   };
 
   const setTimerListHandler = (newVal: any) => {
@@ -77,6 +69,8 @@ const AppProvider = ({ children }: any) => {
         setTimerList: setTimerListHandler,
         goals,
         setGoals,
+        isLoggedIn,
+        setIsLoggedIn,
       }}
     >
       {children}

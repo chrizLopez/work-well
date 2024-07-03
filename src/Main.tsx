@@ -1,10 +1,8 @@
 import { ImageBackground, View, Image } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import SelectorModal from "./components/SelectorModal";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
 import styles from "./styles";
-import BottomSheetContents from "./components/BottomSheetContents";
 import LinearButton from "./components/LinearButton";
 import CountdownTimer from "./components/CountdownTimer";
 import BottomButons from "./components/BottomButons";

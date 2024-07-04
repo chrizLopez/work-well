@@ -12,6 +12,7 @@ import TaskHistory from "./components/TaskHistory";
 
 import { GOAL_LIST } from "./components/static/InitialGoals";
 import GoalsHistory from "./components/GoalsHistory";
+import Login from "./components/Login";
 
 const Main = () => {
   const { timerList, setGoals } = useContext(AppContext);
@@ -114,6 +115,7 @@ const Main = () => {
             />
           )}
           {settingsView === 2 && (<GoalsHistory />)}
+          {settingsView === 3 && (<Login />)}
         </BottomSheetView>
       </BottomSheet>
 

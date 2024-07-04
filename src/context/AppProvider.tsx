@@ -33,7 +33,7 @@ const AppProvider = ({ children }: any) => {
   const [currentTask, setCurrentTask] = useState({} as any);
   const [timerList, setTimerList] = useState(ITEM_SELECTION);
   const [goals, setGoals] = useState([] as any[]);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const onRemoveItem = (id: string) => {
     setTaskHistory((prev) => prev.filter((item) => item.id !== id));

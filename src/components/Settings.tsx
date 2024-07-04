@@ -13,7 +13,12 @@ import { EStyleSheet } from "../config/EStyleSheet";
 import { AppContext } from "../context/AppProvider";
 import LinearButton from "./LinearButton";
 
-const Settings = ({ onHide }: any) => {
+type SettingsProps = {
+  onHide: () => void;
+  setView: (view: number) => void;
+};
+
+const Settings = ({ onHide, setView }: SettingsProps) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const { setTimerList, isLoggedIn } = useContext(AppContext);
 
@@ -71,6 +76,7 @@ const Settings = ({ onHide }: any) => {
   };
 
   const onPressAccountHandler = () => {
+    setView(isLoggedIn ? 2 : 3)
     // onHide();
     
   }

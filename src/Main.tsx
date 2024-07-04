@@ -11,9 +11,10 @@ import Settings from "./components/Settings";
 import TaskHistory from "./components/TaskHistory";
 
 import { GOAL_LIST } from "./components/static/InitialGoals";
+import GoalsHistory from "./components/GoalsHistory";
 
 const Main = () => {
-  const {timerList, setGoals} = useContext(AppContext);
+  const { timerList, setGoals } = useContext(AppContext);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetRefTask = useRef<BottomSheet>(null);
 
@@ -28,6 +29,7 @@ const Main = () => {
     isChecked: false,
     linearColor: ["#A29BFE", "#74B9FF"],
   });
+  const [settingsView, setSettingsView] = useState(1);
 
   useEffect(() => {
     setGoals(GOAL_LIST);
@@ -54,7 +56,7 @@ const Main = () => {
   const onPressHomeHandler = () => {
     setShowButtons(false);
     setShowSelector(true);
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -83,7 +85,7 @@ const Main = () => {
           {showSelector && (
             <View style={styles.timerContainer}>
               {timerList.map((item: any, index: number) => (
-                <LinearButton 
+                <LinearButton
                   key={index}
                   title={item.label}
                   onPress={() => {
@@ -105,7 +107,13 @@ const Main = () => {
         backgroundStyle={styles.bottomSheet}
       >
         <BottomSheetView style={styles.contentContainer}>
-          <Settings onHide={hideBottomSheetHandler} />
+          {settingsView === 1 && (
+            <Settings
+              onHide={hideBottomSheetHandler}
+              setView={(type) => setSettingsView(type)}
+            />
+          )}
+          {settingsView === 2 && (<GoalsHistory />)}
         </BottomSheetView>
       </BottomSheet>
 
@@ -133,6 +141,7 @@ const Main = () => {
               bottomSheetRef.current?.expand();
             }, 500);
             bottomSheetRefTask.current?.close();
+            setSettingsView(1);
           }}
         />
       </View>

@@ -1,4 +1,5 @@
 import {
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -16,11 +17,11 @@ import GoalItem from "./GoalItem";
 type GoalsHistoryProps = {};
 
 const GoalsHistory = ({}: GoalsHistoryProps) => {
-  const { goals, setGoals } = useContext(AppContext);
+  const { goals, setGoals, setShowLoader } = useContext(AppContext);
   const [siCollpased, setSiCollapsed] = useState(true);
 
   return (
-    <View>
+    <ScrollView contentContainerStyle={styles.ccStyle}>
       <View style={styles.settingsView}>
         <Text style={styles.settingsText}>Your Goals</Text>
       </View>
@@ -31,6 +32,7 @@ const GoalsHistory = ({}: GoalsHistoryProps) => {
             goal={goal}
             goals={goals}
             setGoals={setGoals}
+            setShowLoader={setShowLoader}
           />
         ))}
       </View>
@@ -43,13 +45,16 @@ const GoalsHistory = ({}: GoalsHistoryProps) => {
           <Text style={styles.saveTxt}>Add goal</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 export default GoalsHistory;
 
 const styles = EStyleSheet.create({
+  ccStyle: {
+    paddingBottom: "100rem",
+  },
   saveTxt: {
     fontSize: "16rem",
     fontWeight: "500",

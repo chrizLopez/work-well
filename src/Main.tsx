@@ -10,12 +10,11 @@ import { AppContext } from "./context/AppProvider";
 import Settings from "./components/Settings";
 import TaskHistory from "./components/TaskHistory";
 
-import { GOAL_LIST } from "./components/static/InitialGoals";
 import GoalsHistory from "./components/GoalsHistory";
 import Login from "./components/Login";
 
 const Main = () => {
-  const { timerList, setGoals, showLoader } = useContext(AppContext);
+  const { timerList, setGoals, showLoader, isLoggedIn } = useContext(AppContext);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetRefTask = useRef<BottomSheet>(null);
 
@@ -31,11 +30,7 @@ const Main = () => {
     linearColor: ["#A29BFE", "#74B9FF"],
   });
   const [settingsView, setSettingsView] = useState(1);
-
-  useEffect(() => {
-    setGoals(GOAL_LIST);
-  }, []);
-
+  
   const handleKeyReset = () => {
     setKeyReset((prev) => prev + 1);
   };
@@ -51,6 +46,10 @@ const Main = () => {
 
   const hideBottomSheetHandler = () => {
     bottomSheetRef.current?.close();
+  };
+
+  const hideBottomSheetTaskHandler = () => {
+    bottomSheetRefTask.current?.close();
   };
 
   const onPressHomeHandler = () => {
@@ -124,7 +123,11 @@ const Main = () => {
         backgroundStyle={styles.bottomSheet}
       >
         <BottomSheetView style={styles.contentContainer}>
-          <TaskHistory />
+          {isLoggedIn ? (
+            <TaskHistory />
+          ) : (
+            <Login onHide={hideBottomSheetTaskHandler} />
+          )}
         </BottomSheetView>
       </BottomSheet>
 

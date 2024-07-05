@@ -1,5 +1,6 @@
-import React, { Dispatch, createContext, useState } from "react";
+import React, { Dispatch, createContext, useEffect, useState } from "react";
 import { ITEM_SELECTION } from "../components/static/TimerList";
+import { getStringData } from "../utils/storage";
 
 type AppContextType = {
   taskHistory: any[];
@@ -44,6 +45,18 @@ const AppProvider = ({ children }: any) => {
   const [showLoader, setShowLoader] = useState(false);
   const [token, setToken] = useState("");
 
+  useEffect(() => {
+    checkData();
+  }, []);
+
+  const checkData = async () => {
+    const data = await getStringData("token");
+    if (data) {
+      setToken(data);
+      setIsLoggedIn(true);
+    }
+  }
+
   const onRemoveItem = (id: string) => {
     setTaskHistory((prev) => prev.filter((item) => item.id !== id));
   };
@@ -52,12 +65,12 @@ const AppProvider = ({ children }: any) => {
     // add task to specific goal
     const ind = goals.findIndex((item) => item.id === id);
     const goal = goals[ind];
-    const tasks = goal.tasks;
+    const tasks = goal.items;
     const newTask = {
       id: tasks.length + 1,
-      name: taskname,
+      title: taskname,
     };
-    goal.tasks = [...tasks, newTask];
+    goal.items = [...tasks, newTask];
     const newGoals = [...goals];
     newGoals[ind] = goal;
     setGoals(newGoals);

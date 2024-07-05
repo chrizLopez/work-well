@@ -13,19 +13,19 @@ type TaskHistoryItemProps = {
 
 const TaskHistoryItem = ({item, onRemoveItem, onPressCheck}: TaskHistoryItemProps) => {
 const onCheckPressHandler = () => {
-    const newVal = !item.checked;
-    onPressCheck(newVal, item.id);
+    const newVal = !item.done;
+    onPressCheck(newVal, item);
   }
 
   return (
     <View style={styles.listContainer}>
       <TouchableOpacity style={styles.checkboxView} onPress={onCheckPressHandler}>
-        <Image source={item.checked ? activeAcheckBox : inactiveCheckbox} style={styles.checkbox} />
+        <Image source={item.done ? activeAcheckBox : inactiveCheckbox} style={styles.checkbox} />
       </TouchableOpacity>
       <View style={styles.listItems}>
         <View key={item.id} style={styles.itemList}>
           <Text style={styles.tasknameTxt}>
-            {item.name !== "" ? item.name : "No task name"}
+            {item.title !== "" ? item.title : "No task name"}
           </Text>
         </View>
         <TouchableOpacity onPress={() => onRemoveItem(item.id)}>

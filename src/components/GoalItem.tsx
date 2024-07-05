@@ -3,33 +3,44 @@ import React, { useEffect, useState } from "react";
 import Collapsible from "react-native-collapsible";
 import { EStyleSheet } from "../config/EStyleSheet";
 import Checkbox from "expo-checkbox";
+import { updateTaskRequest } from "../utils/requests";
 
-const GoalItem = ({ goal, goals, setGoals }: any) => {
+const GoalItem = ({ goal, goals, setGoals, setShowLoader }: any) => {
   const [isCollpased, setIsCollapsed] = useState(true);
   const [selected, setSelected]: any = useState({});
   const [checkedTaskCount, setCheckedTaskCount] = useState(0);
-  const { name, tasks } = goal;
+  const { title, items } = goal;
   useEffect(() => {
     setSelected(goal);
-    setCheckedTaskCount(tasks.filter((task: any) => task.checked).length);
+    setCheckedTaskCount(items.filter((task: any) => task.done).length);
   }, []);
 
   useEffect(() => {
     if (selected.tasks) {
-      setCheckedTaskCount(selected.tasks.filter((task: any) => task.checked).length);
+      setCheckedTaskCount(selected.items.filter((task: any) => task.done).length);
     }
   }, [selected]);
 
-  const onPressCheckHandler = (isChecked: boolean, id: string) => {
+  const onPressCheckHandler = async (isChecked: boolean, data: any) => {
+    setShowLoader(true);
+    data.done = isChecked;
+    const res = await updateTaskRequest(data.id, data);
+    if (res) {
+      updateCheck(isChecked, data.id);
+    }
+    setShowLoader(false);
+  }
+
+  const updateCheck = (isChecked: boolean, id: string) => {
     if (!selected) {
       return;
     }
-    const ind = selected.tasks.findIndex((item: any) => item.id === id);
+    const ind = selected.items.findIndex((item: any) => item.id === id);
     if (ind === undefined || ind === -1) {
       return;
     }
-    const newTasks = [...selected.tasks];
-    newTasks[ind].checked = isChecked;
+    const newTasks = [...selected.items];
+    newTasks[ind].done = isChecked;
     const newGoal = { ...selected, tasks: newTasks };
     const indGoal = goals.findIndex((item: any) => item.id === goal.id);
     const newGoals = [...goals];
@@ -61,22 +72,22 @@ const GoalItem = ({ goal, goals, setGoals }: any) => {
         onPress={() => setIsCollapsed(!isCollpased)}
         style={styles.itemTitleView}
       >
-        <Text style={styles.itemTxt}>{name}</Text>
+        <Text style={styles.itemTxt}>{title}</Text>
         <Text style={styles.itemTxt}>
-          {checkedTaskCount}/{tasks.length}
+          {checkedTaskCount}/{items.length}
         </Text>
       </TouchableOpacity>
       <Collapsible collapsed={isCollpased}>
-        {tasks.map((task: any) => (
+        {items.map((task: any) => (
           <View style={styles.taskItem} key={task.id}>
             <View style={styles.leftItem}>
               <Checkbox
                 style={styles.checkbox}
-                value={task.checked}
-                onValueChange={(val) => onPressCheckHandler(val, task.id)}
-                color={task.checked ? "#74B9FFCC" : undefined}
+                value={task.done}
+                onValueChange={(val) => onPressCheckHandler(val, task)}
+                color={task.done ? "#74B9FFCC" : undefined}
               />
-              <Text style={styles.tasknameTxt}>{task.name}</Text>
+              <Text style={styles.tasknameTxt}>{task.title}</Text>
             </View>
             <TouchableOpacity onPress={() => removeItemHandler(task.id)}>
               <Image style={styles.deleteIco} source={require("../assets/icons/trash.png")} />

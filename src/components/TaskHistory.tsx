@@ -1,33 +1,96 @@
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { EStyleSheet } from "../config/EStyleSheet";
 import TaskHistoryItem from "./TaskHistoryItem";
 import { AppContext } from "../context/AppProvider";
 import { Dropdown } from "react-native-element-dropdown";
+import {
+  addTaskRequest,
+  getGoalsRequest,
+  updateTaskRequest,
+} from "../utils/requests";
+import { ScrollView } from "react-native-gesture-handler";
 
 type dropdownItemProps = {
-  name: string;
+  title: string;
   id: string;
-  tasks: any[];
-  checked: boolean;
+  items: any[];
+  description: string;
 };
 
 const TaskHistory = () => {
-  const { onAddTask, goals, setGoals } = useContext(AppContext);
+  const { onAddTask, goals, setGoals, setShowLoader } = useContext(AppContext);
   const [taskName, setTaskName] = useState("");
-  const [selectedGoal, setSelectedGoal] = useState<dropdownItemProps | null>(null);
-  const [counter, setCounter] = useState(0);
+  const [selectedGoal, setSelectedGoal] = useState<dropdownItemProps | null>(
+    null
+  );
+
+  useEffect(() => {
+    getGoals();
+  }, []);
+
+  const getGoals = async () => {
+    const res = await getGoalsRequest();
+    setGoals(res.lists);
+  };
 
   const onChangeTexthandler = (text: string) => {
     setTaskName(text);
   };
 
+  const addTaskHandler = async () => {
+    if (!selectedGoal) {
+      return;
+    }
+    setShowLoader(true);
+    const task = {
+      title: taskName,
+      done: false,
+      listId: selectedGoal.id,
+      taskType: 0,
+      notes: "",
+    };
+
+    const res = await addTaskRequest(task);
+    onAddTask(taskName, selectedGoal.id);
+    setTaskName("");
+    setShowLoader(false);
+  };
+
+  const onPressCheckHandler = async (isChecked: boolean, data: any) => {
+    setShowLoader(true);
+    data.done = isChecked;
+    const res = await updateTaskRequest(data.id, data);
+    if (res) {
+      updateCheck(isChecked, data.id);
+    }
+    setShowLoader(false);
+  };
+
+  const updateCheck = (isChecked: boolean, id: string) => {
+    if (!selectedGoal) {
+      return;
+    }
+    const ind = selectedGoal.items.findIndex((item) => item.id === id);
+    if (ind === undefined || ind === -1) {
+      return;
+    }
+    const newTasks = [...selectedGoal.items];
+    newTasks[ind].done = isChecked;
+    const newGoal = { ...selectedGoal, tasks: newTasks };
+    const indGoal = goals.findIndex((item) => item.id === selectedGoal.id);
+    const newGoals = [...goals];
+    newGoals[indGoal] = newGoal;
+    setGoals(newGoals);
+    setSelectedGoal(newGoal);
+  };
+
   const removeItemHandler = (id: number) => {
-    const ind = selectedGoal?.tasks.findIndex((item) => item.id === id);
+    const ind = selectedGoal?.items.findIndex((item) => item.id === id);
     if (ind === undefined || ind === -1 || !selectedGoal) {
       return;
     }
-    const newTasks = [...selectedGoal.tasks];
+    const newTasks = [...selectedGoal.items];
     newTasks.splice(ind, 1);
     const newGoal = { ...selectedGoal, tasks: newTasks };
     const indGoal = goals.findIndex((item) => item.id === selectedGoal.id);
@@ -35,34 +98,7 @@ const TaskHistory = () => {
     newGoals[indGoal] = newGoal;
     setGoals(newGoals);
     setSelectedGoal(newGoal);
-
   };
-
-  const addTaskHandler = () => {
-    if (!selectedGoal) {
-      return;
-    }
-    onAddTask(taskName, selectedGoal.id);
-    setTaskName("");
-  };
-
-  const onPressCheckHandler = (isChecked: boolean, id: string) => {
-    if (!selectedGoal) {
-      return;
-    }
-    const ind = selectedGoal.tasks.findIndex((item) => item.id === id);
-    if (ind === undefined || ind === -1) {
-      return;
-    }
-    const newTasks = [...selectedGoal.tasks];
-    newTasks[ind].checked = isChecked;
-    const newGoal = { ...selectedGoal, tasks: newTasks };
-    const indGoal = goals.findIndex((item) => item.id === selectedGoal.id);
-    const newGoals = [...goals];
-    newGoals[indGoal] = newGoal;
-    setGoals(newGoals);
-    setSelectedGoal(newGoal);
-  }
 
   return (
     <View>
@@ -75,7 +111,7 @@ const TaskHistory = () => {
           iconStyle={styles.iconStyle}
           data={goals}
           maxHeight={300}
-          labelField="name"
+          labelField="title"
           valueField="id"
           placeholder="Select goal"
           searchPlaceholder="Search..."
@@ -96,15 +132,22 @@ const TaskHistory = () => {
           <Text style={styles.addtaskTxt}>Add Task</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.itemListContainer}>
-        {selectedGoal && selectedGoal.tasks.map((item: any) => (
-          <TaskHistoryItem
-            key={item.id}
-            item={item}
-            onRemoveItem={() => removeItemHandler(item.id)}
-            onPressCheck={onPressCheckHandler}
-          />
-        ))}
+      <View style={styles.svStyle}>
+        <ScrollView
+          style={styles.itemListContainer}
+          contentContainerStyle={styles.ccStyle}
+          showsVerticalScrollIndicator={false}
+        >
+          {selectedGoal &&
+            selectedGoal.items.map((item: any) => (
+              <TaskHistoryItem
+                key={item.id}
+                item={item}
+                onRemoveItem={() => {}}
+                onPressCheck={onPressCheckHandler}
+              />
+            ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -113,13 +156,19 @@ const TaskHistory = () => {
 export default TaskHistory;
 
 const styles = EStyleSheet.create({
+  svStyle: {
+    height: "80%",
+  },
+  ccStyle: {
+    paddingBottom: "100rem",
+  },
   dropdown: {
     width: "100%",
     paddingHorizontal: "10rem",
     borderRadius: "10rem",
     borderWidth: "1rem",
     borderColor: "#CCCCCC",
-    backgroundColor: "#E8E8E8"
+    backgroundColor: "#E8E8E8",
   },
   addtaskBtn: {
     backgroundColor: "#282828CC",
@@ -133,7 +182,7 @@ const styles = EStyleSheet.create({
     borderWidth: "1rem",
     borderColor: "#CCCCCC",
     width: "70%",
-    backgroundColor: '#E8E8E8',
+    backgroundColor: "#E8E8E8",
     borderRadius: "10rem",
   },
   addTaskView: {
@@ -154,8 +203,8 @@ const styles = EStyleSheet.create({
     fontSize: "16rem",
   },
   addtaskTxt: {
-    fontSize: '12rem',
-    color: 'white',
+    fontSize: "12rem",
+    color: "white",
     fontWeight: "500",
-  }
+  },
 });

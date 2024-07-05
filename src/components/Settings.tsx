@@ -1,4 +1,5 @@
 import {
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -76,13 +77,15 @@ const Settings = ({ onHide, setView }: SettingsProps) => {
   };
 
   const onPressAccountHandler = () => {
-    setView(isLoggedIn ? 2 : 3)
+    setView(isLoggedIn ? 2 : 3);
     // onHide();
-    
-  }
+  };
 
   return (
-    <View>
+    <ScrollView
+      contentContainerStyle={styles.ccStyle}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.settingsView}>
         <Text style={styles.settingsText}>Settings</Text>
       </View>
@@ -127,28 +130,43 @@ const Settings = ({ onHide, setView }: SettingsProps) => {
             value={isEnabled}
             style={styles.switchTgl}
           />
-        <Text style={styles.drkmdTxt}>Dark Mode</Text>
-      </View>
+          <Text style={styles.drkmdTxt}>Dark Mode</Text>
         </View>
+      </View>
       <View style={styles.submitBtnView}>
         <TouchableOpacity style={styles.submitBtn} onPress={submitHandler}>
           <Text style={styles.saveTxt}>Save Settings</Text>
         </TouchableOpacity>
         <LinearButton
-          title={isLoggedIn ? 'User Account' : 'Login Account'}
+          title={isLoggedIn ? "User Account" : "Login Account"}
           onPress={onPressAccountHandler}
           linearColors={["#0984E3", "#74B9FF"]}
           buttonStyle={styles.loginBtn}
           textStyle={styles.saveTxt}
         />
+        <TouchableOpacity style={styles.signOutBttn} onPress={submitHandler}>
+          <Text style={styles.saveTxt}>Sign Out</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 export default Settings;
 
 const styles = EStyleSheet.create({
+  ccStyle: {
+    paddingBottom: "100rem",
+  },
+  signOutBttn: {
+    marginTop: "10rem",
+    paddingVertical: "15rem",
+    borderRadius: "50rem",
+    width: "232rem",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#282828CC",
+  },
   saveTxt: {
     fontSize: "16rem",
     fontWeight: "500",

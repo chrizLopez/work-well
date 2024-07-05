@@ -68,7 +68,7 @@ const GoalItem = ({ goal, goals, setGoals }: any) => {
       </TouchableOpacity>
       <Collapsible collapsed={isCollpased}>
         {tasks.map((task: any) => (
-          <View style={styles.taskItem}>
+          <View style={styles.taskItem} key={task.id}>
             <View style={styles.leftItem}>
               <Checkbox
                 style={styles.checkbox}

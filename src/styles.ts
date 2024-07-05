@@ -1,6 +1,17 @@
 import { EStyleSheet } from "./config/EStyleSheet";
 
 const styles = EStyleSheet.create({
+  loaderView: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#ffffff50",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
   logoView: {
     position: "absolute",
     zIndex: 1,

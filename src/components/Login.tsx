@@ -6,16 +6,36 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import { EStyleSheet } from "../config/EStyleSheet";
 import LinearButton from "./LinearButton";
+import { loginRequest } from "../utils/requests";
+import { AppContext } from "../context/AppProvider";
 
-const Login = () => {
-  const [username, setUsername] = useState("");
+type LoginProps = {
+  onHide: () => void;
+};
+
+const Login = ({onHide}: LoginProps) => {
+  const {setShowLoader, setToken, setIsLoggedIn} = useContext(AppContext);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const onPressAccountHandler = () => {};
+  const loginHandler = async () => {
+    setShowLoader(true);
+    try {
+      const res = await loginRequest(email, password);
+      if (res.accessToken) {
+        setToken(res.accessToken);
+        setIsLoggedIn(true);
+        onHide();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setShowLoader(false)
+  };
 
   return (
     <View>
@@ -23,12 +43,12 @@ const Login = () => {
         <Text style={styles.settingsText}>Login</Text>
       </View>
       <View style={styles.inputView}>
-        <Text style={styles.lableTxt}>Username</Text>
+        <Text style={styles.lableTxt}>Email</Text>
         <TextInput
           style={styles.inputStl}
-          placeholder="Username"
-          value={username}
-          onChangeText={(text) => setUsername(text)}
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
         />
       </View>
       <View style={styles.inputView}>
@@ -37,6 +57,7 @@ const Login = () => {
           style={styles.inputStl}
           placeholder="Password"
           value={password}
+          secureTextEntry
           onChangeText={(text) => setPassword(text)}
         />
       </View>
@@ -44,7 +65,7 @@ const Login = () => {
       <View style={styles.submitBtnView}>
         <LinearButton
           title={"Login"}
-          onPress={onPressAccountHandler}
+          onPress={loginHandler}
           linearColors={["#0984E3", "#74B9FF"]}
           buttonStyle={styles.loginBtn}
           textStyle={styles.saveTxt}
@@ -149,7 +170,7 @@ const styles = EStyleSheet.create({
     fontSize: "16rem",
     borderWidth: "1rem",
     borderColor: "#CCCCCC",
-    width: "50%",
+    width: "60%",
     padding: "5rem",
     borderRadius: "10rem",
     paddingHorizontal: "10rem",

@@ -1,10 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { EStyleSheet } from "../config/EStyleSheet";
 import { useCountdown } from "react-native-countdown-circle-timer";
 import Svg, { Path, LinearGradient, Stop, Defs } from "react-native-svg";
-import Constants from "expo-constants";
-import { secondsToMinutes } from "./helper";
+import { secondsToMinutes } from "../utils/helper";
 
 type CountdownTimerProps = {
   duration: number;

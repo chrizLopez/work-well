@@ -1,4 +1,4 @@
-import { ImageBackground, View, Image } from "react-native";
+import { ImageBackground, View, Image, ActivityIndicator } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
@@ -15,7 +15,7 @@ import GoalsHistory from "./components/GoalsHistory";
 import Login from "./components/Login";
 
 const Main = () => {
-  const { timerList, setGoals } = useContext(AppContext);
+  const { timerList, setGoals, showLoader } = useContext(AppContext);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetRefTask = useRef<BottomSheet>(null);
 
@@ -34,7 +34,6 @@ const Main = () => {
 
   useEffect(() => {
     setGoals(GOAL_LIST);
-    console.log("GOAL_LIST set");
   }, []);
 
   const handleKeyReset = () => {
@@ -114,8 +113,8 @@ const Main = () => {
               setView={(type) => setSettingsView(type)}
             />
           )}
-          {settingsView === 2 && (<GoalsHistory />)}
-          {settingsView === 3 && (<Login />)}
+          {settingsView === 2 && <GoalsHistory />}
+          {settingsView === 3 && <Login onHide={hideBottomSheetHandler} />}
         </BottomSheetView>
       </BottomSheet>
 
@@ -147,6 +146,11 @@ const Main = () => {
           }}
         />
       </View>
+      {showLoader && (
+        <View style={styles.loaderView}>
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )}
     </View>
   );
 };

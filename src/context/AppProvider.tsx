@@ -1,5 +1,4 @@
 import React, { Dispatch, createContext, useState } from "react";
-import { generateId } from "../components/helper";
 import { ITEM_SELECTION } from "../components/static/TimerList";
 
 type AppContextType = {
@@ -13,6 +12,10 @@ type AppContextType = {
   setGoals: Dispatch<React.SetStateAction<any>>;
   isLoggedIn: boolean;
   setIsLoggedIn: Dispatch<React.SetStateAction<boolean>>;
+  showLoader: boolean;
+  setShowLoader: Dispatch<React.SetStateAction<boolean>>;
+  token: string;
+  setToken: Dispatch<React.SetStateAction<string>>;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -26,6 +29,10 @@ const AppContext = createContext<AppContextType>({
   setGoals: () => {},
   isLoggedIn: false,
   setIsLoggedIn: () => {},
+  showLoader: false,
+  setShowLoader: () => {},
+  token: "",
+  setToken: () => {},
 });
 
 const AppProvider = ({ children }: any) => {
@@ -34,6 +41,8 @@ const AppProvider = ({ children }: any) => {
   const [timerList, setTimerList] = useState(ITEM_SELECTION);
   const [goals, setGoals] = useState([] as any[]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
+  const [token, setToken] = useState("");
 
   const onRemoveItem = (id: string) => {
     setTaskHistory((prev) => prev.filter((item) => item.id !== id));
@@ -71,6 +80,10 @@ const AppProvider = ({ children }: any) => {
         setGoals,
         isLoggedIn,
         setIsLoggedIn,
+        showLoader,
+        setShowLoader,
+        token,
+        setToken,
       }}
     >
       {children}

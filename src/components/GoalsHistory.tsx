@@ -7,23 +7,45 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useState } from "react";
-import Collapsible from "react-native-collapsible";
+import React, { useContext, useEffect, useState } from "react";
 
 import { EStyleSheet } from "../config/EStyleSheet";
 import { AppContext } from "../context/AppProvider";
 import GoalItem from "./GoalItem";
+import ModalComponent from "./ModalComponent";
+import { getGoalsRequest } from "../utils/requests";
 
 type GoalsHistoryProps = {};
 
 const GoalsHistory = ({}: GoalsHistoryProps) => {
   const { goals, setGoals, setShowLoader } = useContext(AppContext);
-  const [siCollpased, setSiCollapsed] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    getGoals();
+  }, []);
+
+  const getGoals = async () => {
+    setShowLoader(true);
+    const res = await getGoalsRequest();
+    setGoals(res.lists);
+    setShowLoader(false);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.ccStyle}>
+      <ModalComponent
+        show={showModal}
+        setShowModal={setShowModal}
+        setShowLoader={setShowLoader}
+        getGoals={getGoals}
+      />
       <View style={styles.settingsView}>
         <Text style={styles.settingsText}>Your Goals</Text>
+      </View>
+      <View style={styles.haderView}>
+        <Text style={styles.headerTxt}>Goals</Text>
+        <Text style={styles.headerTxt}>Status</Text>
       </View>
       <View>
         {goals.map((goal) => (
@@ -40,7 +62,7 @@ const GoalsHistory = ({}: GoalsHistoryProps) => {
       <View style={styles.submitBtnView}>
         <TouchableOpacity
           style={styles.submitBtn}
-          onPress={() => console.log(1)}
+          onPress={() => setShowModal(true)}
         >
           <Text style={styles.saveTxt}>Add goal</Text>
         </TouchableOpacity>
@@ -52,6 +74,17 @@ const GoalsHistory = ({}: GoalsHistoryProps) => {
 export default GoalsHistory;
 
 const styles = EStyleSheet.create({
+  haderView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: "10rem",
+  },
+  headerTxt: {
+    fontSize: "16rem",
+    fontWeight: "700",
+    color: "#282828",
+    marginBottom: "5rem",
+  },
   ccStyle: {
     paddingBottom: "100rem",
   },
@@ -79,6 +112,7 @@ const styles = EStyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "#CCCCCC",
     paddingBottom: "5rem",
+    marginBottom: "10rem",
   },
   settingsText: {
     fontSize: "24rem",

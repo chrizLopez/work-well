@@ -137,13 +137,13 @@ const Main = () => {
           onPressPlus={() => {
             setTimeout(() => {
               bottomSheetRefTask.current?.expand();
-            }, 500);
+            }, 100);
             bottomSheetRef.current?.close();
           }}
           onPressMenu={() => {
             setTimeout(() => {
               bottomSheetRef.current?.expand();
-            }, 500);
+            }, 100);
             bottomSheetRefTask.current?.close();
             setSettingsView(1);
           }}

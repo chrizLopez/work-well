@@ -76,3 +76,18 @@ export const addTaskRequest = async (data: any) => {
     throw error;
   }
 };
+
+export const saveGoalRequest = async (data: any) => {
+  try {
+    const response = await axios.post(`/Goals`, data);
+    console.log(response);
+    const { status } = response;
+
+    if (status !== 200) {
+      throw new Error("Something went wrong!");
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};

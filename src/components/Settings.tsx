@@ -21,7 +21,8 @@ type SettingsProps = {
 
 const Settings = ({ onHide, setView }: SettingsProps) => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const { setTimerList, isLoggedIn } = useContext(AppContext);
+  const { setTimerList, isLoggedIn, setToken, setIsLoggedIn } =
+    useContext(AppContext);
 
   const [pomodoroTimer, setPomodoroTimer]: any = useState(
     ITEM_SELECTION[0].duration / 60
@@ -79,6 +80,11 @@ const Settings = ({ onHide, setView }: SettingsProps) => {
   const onPressAccountHandler = () => {
     setView(isLoggedIn ? 2 : 3);
     // onHide();
+  };
+
+  const signOutHandler = () => {
+    setToken("");
+    setIsLoggedIn(false);
   };
 
   return (
@@ -144,9 +150,11 @@ const Settings = ({ onHide, setView }: SettingsProps) => {
           buttonStyle={styles.loginBtn}
           textStyle={styles.saveTxt}
         />
-        <TouchableOpacity style={styles.signOutBttn} onPress={submitHandler}>
-          <Text style={styles.saveTxt}>Sign Out</Text>
-        </TouchableOpacity>
+        {isLoggedIn && (
+          <TouchableOpacity style={styles.signOutBttn} onPress={signOutHandler}>
+            <Text style={styles.saveTxt}>Sign Out</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
   );

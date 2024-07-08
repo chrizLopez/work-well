@@ -1,6 +1,9 @@
 import React, { Dispatch, createContext, useEffect, useState } from "react";
 import { ITEM_SELECTION } from "../components/static/TimerList";
-import { getStringData } from "../utils/storage";
+import { getStringData, storeStringData } from "../utils/storage";
+import axiosInstance from "../utils/axios";
+import Toast from "react-native-toast-message";
+import { handleError } from "../utils/errorHandler";
 
 type AppContextType = {
   taskHistory: any[];
@@ -50,12 +53,20 @@ const AppProvider = ({ children }: any) => {
   }, []);
 
   const checkData = async () => {
-    const data = await getStringData("token");
-    if (data) {
-      setToken(data);
-      setIsLoggedIn(true);
+    try {
+      await axiosInstance.get("/Goals");
+      const data = await getStringData("token");
+      if (data) {
+        setToken(data);
+        setIsLoggedIn(true);
+      }
+    } catch (error: any) {
+      handleError(error);
+      setIsLoggedIn(false);
+      setToken("");
+      storeStringData("token", "");
     }
-  }
+  };
 
   const onRemoveItem = (id: string) => {
     setTaskHistory((prev) => prev.filter((item) => item.id !== id));

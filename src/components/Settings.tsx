@@ -13,6 +13,7 @@ import { ITEM_SELECTION } from "./static/TimerList";
 import { EStyleSheet } from "../config/EStyleSheet";
 import { AppContext } from "../context/AppProvider";
 import LinearButton from "./LinearButton";
+import { storeStringData } from "../utils/storage";
 
 type SettingsProps = {
   onHide: () => void;
@@ -84,6 +85,7 @@ const Settings = ({ onHide, setView }: SettingsProps) => {
 
   const signOutHandler = () => {
     setToken("");
+    storeStringData("token", "");
     setIsLoggedIn(false);
   };
 

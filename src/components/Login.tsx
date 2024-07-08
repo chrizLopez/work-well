@@ -12,6 +12,8 @@ import { EStyleSheet } from "../config/EStyleSheet";
 import LinearButton from "./LinearButton";
 import { loginRequest } from "../utils/requests";
 import { AppContext } from "../context/AppProvider";
+import { handleError } from "../utils/errorHandler";
+import Toast from "react-native-toast-message";
 
 type LoginProps = {
   onHide: () => void;
@@ -30,9 +32,14 @@ const Login = ({onHide}: LoginProps) => {
         setToken(res.accessToken);
         setIsLoggedIn(true);
         onHide();
+        Toast.show({
+          text1: "Success",
+          text2: "Login Successful",
+          type: "success",
+        });
       }
     } catch (error) {
-      console.log(error);
+      handleError(error);
     }
     setShowLoader(false)
   };

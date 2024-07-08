@@ -14,6 +14,7 @@ import { AppContext } from "../context/AppProvider";
 import GoalItem from "./GoalItem";
 import ModalComponent from "./ModalComponent";
 import { getGoalsRequest } from "../utils/requests";
+import { handleError } from "../utils/errorHandler";
 
 type GoalsHistoryProps = {};
 
@@ -27,8 +28,12 @@ const GoalsHistory = ({}: GoalsHistoryProps) => {
 
   const getGoals = async () => {
     setShowLoader(true);
-    const res = await getGoalsRequest();
-    setGoals(res.lists);
+    try {
+      const res = await getGoalsRequest();
+      setGoals(res.lists);
+    } catch (error) {
+      handleError(error);
+    }
     setShowLoader(false);
   };
 
@@ -55,6 +60,7 @@ const GoalsHistory = ({}: GoalsHistoryProps) => {
             goals={goals}
             setGoals={setGoals}
             setShowLoader={setShowLoader}
+            getGoals={getGoals}
           />
         ))}
       </View>

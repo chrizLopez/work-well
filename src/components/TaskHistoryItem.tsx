@@ -7,7 +7,7 @@ const inactiveCheckbox = require("../assets/inactive-checkbox.png");
 
 type TaskHistoryItemProps = {
   item: any;
-  onRemoveItem: (id: string) => void;
+  onRemoveItem: (id: number) => void;
   onPressCheck: (isChecked: boolean, id: string) => void;
 }
 

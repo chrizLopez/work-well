@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import Collapsible from "react-native-collapsible";
 import { EStyleSheet } from "../config/EStyleSheet";
 import Checkbox from "expo-checkbox";
-import { updateTaskRequest } from "../utils/requests";
+import { deleteTaskRequest, updateTaskRequest } from "../utils/requests";
 
-const GoalItem = ({ goal, goals, setGoals, setShowLoader }: any) => {
+const GoalItem = ({ goal, goals, setGoals, setShowLoader, getGoals }: any) => {
   const [isCollpased, setIsCollapsed] = useState(true);
   const [selected, setSelected]: any = useState({});
   const [checkedTaskCount, setCheckedTaskCount] = useState(0);
@@ -50,19 +50,11 @@ const GoalItem = ({ goal, goals, setGoals, setShowLoader }: any) => {
   };
 
 
-  const removeItemHandler = (id: number) => {
-    const ind = selected?.tasks.findIndex((item: any) => item.id === id);
-    if (ind === undefined || ind === -1 || !selected) {
-      return;
+  const removeItemHandler = async (id: number) => {
+    const res = await deleteTaskRequest(id);
+    if (res) {
+      getGoals();
     }
-    const newTasks = [...selected.tasks];
-    newTasks.splice(ind, 1);
-    const newGoal = { ...selected, tasks: newTasks };
-    const indGoal = goals.findIndex((item:  any) => item.id === selected.id);
-    const newGoals = [...goals];
-    newGoals[indGoal] = newGoal;
-    setGoals(newGoals);
-    setSelected(newGoal);
 
   };
 

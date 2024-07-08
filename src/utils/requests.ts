@@ -1,4 +1,5 @@
 import axios from "./axios";
+import { handleError } from "./errorHandler";
 import { storeStringData } from "./storage";
 
 export const loginRequest = async (email: string, password: string) => {
@@ -49,13 +50,13 @@ export const updateTaskRequest = async (id: string, data: any) => {
   }
 };
 
-export const deleteTaskRequest = async (id: string) => {
+export const deleteTaskRequest = async (id: number) => {
   try {
     const response = await axios.delete(`/TaskItems/${id}`);
     const { status } = response;
 
     if (status !== 204) {
-      throw new Error("Something went wrong!");
+      handleError(response);
     }
     return true;
   } catch (error) {
@@ -80,7 +81,6 @@ export const addTaskRequest = async (data: any) => {
 export const saveGoalRequest = async (data: any) => {
   try {
     const response = await axios.post(`/Goals`, data);
-    console.log(response);
     const { status } = response;
 
     if (status !== 200) {

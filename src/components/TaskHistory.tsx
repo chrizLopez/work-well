@@ -6,10 +6,12 @@ import { AppContext } from "../context/AppProvider";
 import { Dropdown } from "react-native-element-dropdown";
 import {
   addTaskRequest,
+  deleteTaskRequest,
   getGoalsRequest,
   updateTaskRequest,
 } from "../utils/requests";
 import { ScrollView } from "react-native-gesture-handler";
+import { handleError } from "../utils/errorHandler";
 
 type dropdownItemProps = {
   title: string;
@@ -19,20 +21,32 @@ type dropdownItemProps = {
 };
 
 const TaskHistory = () => {
-  const { onAddTask, goals, setGoals, setShowLoader } = useContext(AppContext);
+  const { goals, setGoals, setShowLoader } = useContext(AppContext);
   const [taskName, setTaskName] = useState("");
   const [selectedGoal, setSelectedGoal] = useState<dropdownItemProps | null>(
     null
   );
 
   useEffect(() => {
-    getGoals();
+    getGoals('get');
   }, []);
 
-  const getGoals = async () => {
-    const res = await getGoalsRequest();
-    setGoals(res.lists);
+  const getGoals = async (type: string) => {
+    try {
+      const res = await getGoalsRequest();
+      setGoals(res.lists);
+      if (type !== 'get') {
+        updateSelectedGoal(res.lists, selectedGoal);
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
+
+  const updateSelectedGoal = (goalLists: any, selectedGoal: any) => {
+    const goalS = goalLists.find((item: any) => item.id === selectedGoal.id);
+    setSelectedGoal(goalS);
+  }
 
   const onChangeTexthandler = (text: string) => {
     setTaskName(text);
@@ -52,9 +66,11 @@ const TaskHistory = () => {
     };
 
     const res = await addTaskRequest(task);
-    onAddTask(taskName, selectedGoal.id);
-    setTaskName("");
-    setShowLoader(false);
+    if (res) {
+      setTaskName("");
+      setShowLoader(false);
+      getGoals('update');
+    }
   };
 
   const onPressCheckHandler = async (isChecked: boolean, data: any) => {
@@ -85,19 +101,17 @@ const TaskHistory = () => {
     setSelectedGoal(newGoal);
   };
 
-  const removeItemHandler = (id: number) => {
-    const ind = selectedGoal?.items.findIndex((item) => item.id === id);
-    if (ind === undefined || ind === -1 || !selectedGoal) {
-      return;
+  const onRemoveHandler = async (id: number) => {
+    setShowLoader(true);
+    try {
+      const res = await deleteTaskRequest(id);
+      if (res) {
+        getGoals('update');
+      }
+    } catch (error) {
+      handleError(error);
     }
-    const newTasks = [...selectedGoal.items];
-    newTasks.splice(ind, 1);
-    const newGoal = { ...selectedGoal, tasks: newTasks };
-    const indGoal = goals.findIndex((item) => item.id === selectedGoal.id);
-    const newGoals = [...goals];
-    newGoals[indGoal] = newGoal;
-    setGoals(newGoals);
-    setSelectedGoal(newGoal);
+    setShowLoader(false);
   };
 
   return (
@@ -143,7 +157,7 @@ const TaskHistory = () => {
               <TaskHistoryItem
                 key={item.id}
                 item={item}
-                onRemoveItem={() => {}}
+                onRemoveItem={onRemoveHandler}
                 onPressCheck={onPressCheckHandler}
               />
             ))}

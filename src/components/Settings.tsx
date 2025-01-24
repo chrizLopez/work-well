@@ -1,12 +1,30 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useContext, useState } from "react";
 
 import { ITEM_SELECTION } from "./static/TimerList";
 import { EStyleSheet } from "../config/EStyleSheet";
 import { AppContext } from "../context/AppProvider";
+import LinearButton from "./LinearButton";
+import { storeStringData } from "../utils/storage";
 
-const Settings = ({onHide}: any) => {
-  const {setTimerList} = useContext(AppContext);
+type SettingsProps = {
+  onHide: () => void;
+  setView: (view: number) => void;
+};
+
+const Settings = ({ onHide, setView }: SettingsProps) => {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const { setTimerList, isLoggedIn, setToken, setIsLoggedIn } =
+    useContext(AppContext);
+
   const [pomodoroTimer, setPomodoroTimer]: any = useState(
     ITEM_SELECTION[0].duration / 60
   );
@@ -56,8 +74,29 @@ const Settings = ({onHide}: any) => {
     onHide();
   };
 
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
+  };
+
+  const onPressAccountHandler = () => {
+    setView(isLoggedIn ? 2 : 3);
+    // onHide();
+  };
+
+  const signOutHandler = () => {
+    setToken("");
+    storeStringData("token", "");
+    setIsLoggedIn(false);
+  };
+
   return (
-    <View>
+    <ScrollView
+      contentContainerStyle={styles.ccStyle}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.settingsView}>
+        <Text style={styles.settingsText}>Settings</Text>
+      </View>
       <View style={styles.inputView}>
         <Text style={styles.lableTxt}>Pomodoro</Text>
         <TextInput
@@ -88,24 +127,101 @@ const Settings = ({onHide}: any) => {
           onChangeText={(text) => longBreakTimerChangeHandler(text)}
         />
       </View>
+      <View style={styles.inputView}>
+        <Text style={styles.lableTxt}>Theme</Text>
+        <View style={styles.darkModeView}>
+          <Switch
+            trackColor={{ false: "#767577", true: "#A29BFE" }}
+            thumbColor={isEnabled ? "#fff" : "#fff"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+            style={styles.switchTgl}
+          />
+          <Text style={styles.drkmdTxt}>Dark Mode</Text>
+        </View>
+      </View>
       <View style={styles.submitBtnView}>
         <TouchableOpacity style={styles.submitBtn} onPress={submitHandler}>
-          <Text>Submit</Text>
+          <Text style={styles.saveTxt}>Save Settings</Text>
         </TouchableOpacity>
+        <LinearButton
+          title={isLoggedIn ? "User Account" : "Login Account"}
+          onPress={onPressAccountHandler}
+          linearColors={["#0984E3", "#74B9FF"]}
+          buttonStyle={styles.loginBtn}
+          textStyle={styles.saveTxt}
+        />
+        {isLoggedIn && (
+          <TouchableOpacity style={styles.signOutBttn} onPress={signOutHandler}>
+            <Text style={styles.saveTxt}>Sign Out</Text>
+          </TouchableOpacity>
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 export default Settings;
 
 const styles = EStyleSheet.create({
+  ccStyle: {
+    paddingBottom: "100rem",
+  },
+  signOutBttn: {
+    marginTop: "10rem",
+    paddingVertical: "15rem",
+    borderRadius: "50rem",
+    width: "232rem",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#282828CC",
+  },
+  saveTxt: {
+    fontSize: "16rem",
+    fontWeight: "500",
+    color: "#fff",
+  },
+  drkmdTxt: {
+    fontSize: "16rem",
+    color: "#666666",
+    fontWeight: "400",
+    marginLeft: "10rem",
+  },
+  darkModeView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  switchTgl: {
+    transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+  },
+  settingsView: {
+    alignItems: "center",
+    width: "100%",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#CCCCCC",
+    paddingBottom: "5rem",
+  },
+  settingsText: {
+    fontSize: "24rem",
+    fontWeight: "700",
+    color: "#282828",
+  },
   submitBtn: {
     paddingVertical: "15rem",
-    paddingHorizontal: "80rem",
     borderRadius: "50rem",
-    borderWidth: "2rem",
-    borderColor: "#66666659",
+    width: "232rem",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#282828CC",
+  },
+  loginBtn: {
+    paddingVertical: "13rem",
+    borderRadius: "50rem",
+    width: "232rem",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: "10rem",
   },
   submitBtnView: {
     alignItems: "center",
@@ -113,25 +229,25 @@ const styles = EStyleSheet.create({
     marginTop: "20rem",
   },
   inputView: {
-    marginVertical: "10rem",
-    flexDirection: "row",
+    marginVertical: "8rem",
     justifyContent: "space-around",
-    marginTop: "20rem",
+    marginTop: "10rem",
     alignItems: "center",
   },
   lableTxt: {
     fontSize: "16rem",
-    color: "#666666",
+    color: "#282828",
     marginBottom: "5rem",
+    fontWeight: "400",
   },
   inputStl: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#E8E8E8",
     fontSize: "16rem",
     borderWidth: "1rem",
     borderColor: "#CCCCCC",
-    width: "40%",
-    padding: "10rem",
+    width: "50%",
+    padding: "5rem",
     borderRadius: "10rem",
-    // marginLeft: "10%",
+    textAlign: "center",
   },
 });

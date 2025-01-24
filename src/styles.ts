@@ -1,24 +1,34 @@
-import { opacity } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 import { EStyleSheet } from "./config/EStyleSheet";
 
 const styles = EStyleSheet.create({
+  loaderView: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#ffffff50",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
   logoView: {
     position: "absolute",
     zIndex: 1,
-    top: "60rem",
+    top: 0,
     right: 0,
     left: 0,
-    backgroundColor: "#00000020",
-    paddingVertical: "10rem",
+    backgroundColor: "#282828CC",
+    paddingTop: "70rem",
     alignItems: "center",
+    paddingBottom: "10rem",
   },
   logo: {
-    // height: '50rem',
-    // width: '100rem',
+    height: "33rem",
+    width: "137rem",
   },
   bottomSheet: {
-    backgroundColor: "#dbdbd9",
-    opacity: 0.9,
+    backgroundColor: "#fff",
   },
   contentContainer: {
     padding: "20rem",
@@ -27,9 +37,7 @@ const styles = EStyleSheet.create({
     paddingVertical: "10rem",
     width: "180rem",
     borderRadius: "50rem",
-    marginVertical: "1rem",
-    borderWidth: "2rem",
-    borderColor: "#fff",
+    marginVertical: "5rem",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -61,10 +69,7 @@ const styles = EStyleSheet.create({
     zIndex: 1000,
   },
   timerView: {
-    backgroundColor: "#2b2b2b",
-    padding: "30rem",
-    paddingVertical: "80rem",
-    borderRadius: "200rem",
+    marginTop: "-40rem",
   },
   timerText: {
     fontSize: "70rem",
@@ -85,6 +90,13 @@ const styles = EStyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: "50rem",
+  },
+  bottomButtonsView: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    padding: "20rem",
+    backgroundColor: "#fff",
   },
 });
 

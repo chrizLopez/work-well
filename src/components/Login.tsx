@@ -6,23 +6,30 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { EStyleSheet } from "../config/EStyleSheet";
 import LinearButton from "./LinearButton";
-import { loginRequest } from "../utils/requests";
+import { loginRequest, signupRequest } from "../utils/requests";
 import { AppContext } from "../context/AppProvider";
 import { handleError } from "../utils/errorHandler";
 import Toast from "react-native-toast-message";
+import { ScrollView } from "react-native-gesture-handler";
 
 type LoginProps = {
   onHide: () => void;
 };
 
-const Login = ({onHide}: LoginProps) => {
-  const {setShowLoader, setToken, setIsLoggedIn} = useContext(AppContext);
+const Login = ({ onHide }: LoginProps) => {
+  const { setShowLoader, setToken, setIsLoggedIn } = useContext(AppContext);
+  const [type, setType] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    setEmail("");
+    setPassword("");
+  }, [type]);
 
   const loginHandler = async () => {
     setShowLoader(true);
@@ -41,13 +48,40 @@ const Login = ({onHide}: LoginProps) => {
     } catch (error) {
       handleError(error);
     }
-    setShowLoader(false)
+    setShowLoader(false);
   };
 
+  const signupHandler = async () => {
+    if (!email || !password) {
+      Toast.show({
+        text1: "Error",
+        text2: "Please fill all fields",
+        type: "error",
+      });
+      return;
+    }
+    setShowLoader(true);
+    try {
+      const res = await signupRequest(email, password);
+      console.log('signup', res);
+      if (res.status === 200) {
+        Toast.show({
+          text1: "Success",
+          text2: "Signup Successful, Please login to continue",
+          type: "success",
+        });
+      }
+    } catch (error) {
+      handleError(error);
+      setShowLoader(false);
+    }
+    setShowLoader(false);
+  }
+
   return (
-    <View>
+    <ScrollView contentContainerStyle={styles.ccStyle}>
       <View style={styles.settingsView}>
-        <Text style={styles.settingsText}>Login</Text>
+        <Text style={styles.settingsText}>{type.charAt(0).toUpperCase() + type.slice(1)}</Text>
       </View>
       <View style={styles.inputView}>
         <Text style={styles.lableTxt}>Email</Text>
@@ -68,44 +102,83 @@ const Login = ({onHide}: LoginProps) => {
           onChangeText={(text) => setPassword(text)}
         />
       </View>
-      <Text style={styles.forgotPasswordTxt}>Forgot Password?</Text>
-      <View style={styles.submitBtnView}>
-        <LinearButton
-          title={"Login"}
-          onPress={loginHandler}
-          linearColors={["#0984E3", "#74B9FF"]}
-          buttonStyle={styles.loginBtn}
-          textStyle={styles.saveTxt}
-        />
-      </View>
-      <Text style={styles.signupAltTxt}>Or Sign Up using</Text>
-      <View style={styles.signupAltsView}>
-        <TouchableOpacity>
-          <Image
-            style={styles.iconSignups}
-            source={require("../assets/icons/icon-fb.png")}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Image
-            style={styles.iconSignups}
-            source={require("../assets/icons/icon-tw.png")}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Image
-            style={styles.iconSignups}
-            source={require("../assets/icons/icon-g.png")}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+      {type === "login" && (
+        <>
+          <Text style={styles.forgotPasswordTxt}>Forgot Password?</Text>
+          <View style={styles.submitBtnView}>
+            <LinearButton
+              title={"Login"}
+              onPress={loginHandler}
+              linearColors={["#0984E3", "#74B9FF"]}
+              buttonStyle={styles.loginBtn}
+              textStyle={styles.saveTxt}
+            />
+          </View>
+          <View style={styles.submitBtnView}>
+            <TouchableOpacity style={styles.submitBtn} onPress={() => setType('signup')}>
+              <Text style={styles.saveTxt}>Signup</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+      {type === "signup" && (
+        <>
+          <View style={styles.submitBtnView}>
+            <LinearButton
+              title={"Signup"}
+              onPress={signupHandler}
+              linearColors={["#0984E3", "#74B9FF"]}
+              buttonStyle={styles.loginBtn}
+              textStyle={styles.saveTxt}
+            />
+          </View>
+          <TouchableOpacity style={styles.backToLoginBtn} onPress={() => setType('login')}>
+            <Text style={styles.loginTxt}>Back to Login</Text>
+          </TouchableOpacity>
+          <Text style={styles.signupAltTxt}>Or Sign Up using</Text>
+          <View style={styles.signupAltsView}>
+            <TouchableOpacity>
+              <Image
+                style={styles.iconSignups}
+                source={require("../assets/icons/icon-fb.png")}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                style={styles.iconSignups}
+                source={require("../assets/icons/icon-tw.png")}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                style={styles.iconSignups}
+                source={require("../assets/icons/icon-g.png")}
+              />
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+    </ScrollView>
   );
 };
 
 export default Login;
 
 const styles = EStyleSheet.create({
+  backToLoginBtn: {
+    alignItems: "center",
+    marginTop: "10rem",
+  },
+  loginTxt: {
+    fontSize: "16rem",
+    color: "#0984E3",
+    textAlign: "center",
+    marginVertical: "10rem",
+    textDecorationLine: "underline",
+  },
+  ccStyle: {
+    paddingBottom: "90rem",
+  },
   signupAltsView: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -158,6 +231,14 @@ const styles = EStyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: "20rem",
+  },
+  submitBtn: {
+    paddingVertical: "15rem",
+    borderRadius: "50rem",
+    width: "232rem",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#282828CC",
   },
   inputView: {
     marginVertical: "8rem",

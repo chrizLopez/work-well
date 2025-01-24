@@ -22,6 +22,26 @@ export const loginRequest = async (email: string, password: string) => {
   }
 };
 
+export const signupRequest = async (email: string, password: string) => {
+  try {
+    const response = await axios.post(`/Users/register`, {
+      email,
+      password,
+    });
+    const { data, status } = response;
+
+    if (status !== 200) {
+      throw new Error("Invalid status code");
+    }
+
+    // storeStringData("token", data.accessToken);
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getGoalsRequest = async () => {
   try {
     const response = await axios.get(`/Goals`);
